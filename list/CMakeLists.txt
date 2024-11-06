@@ -1,20 +1,24 @@
 # Set project name and C++ standard
 set(PROJECT_NAME alistar_list)
 project(${PROJECT_NAME})
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Include alistar_node library as a subdirectory (when building standalone)
+# Include directories
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/inc)
+
+# Add the alistar_node library as a dependency
 if (EXISTS "${CMAKE_SOURCE_DIR}/../node/CMakeLists.txt")
     add_subdirectory("${CMAKE_SOURCE_DIR}/../node" "${CMAKE_BINARY_DIR}/node_build")
 endif()
 
-# Add the test executable with .out extension
+# Add the library as INTERFACE for linking with other projects
+add_library(${PROJECT_NAME} INTERFACE)
+
+# Specify include directories for the library
+target_include_directories(${PROJECT_NAME} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/inc ${CMAKE_SOURCE_DIR}/../node/inc)
+
+# Add an executable for running tests with .out extension
 add_executable(test_list.out test/test_list.cpp)
 
-# Link the alistar_node library to the test executable
-target_link_libraries(test_list.out PUBLIC alistar_node)
-
-# Include directories to make <list.hpp> and <node.hpp> accessible
-target_include_directories(test_list.out PUBLIC ${CMAKE_SOURCE_DIR}/inc ${CMAKE_SOURCE_DIR}/../node/inc)
+# Link both alistar_list and alistar_node to the test executable
+target_link_libraries(test_list.out PUBLIC ${PROJECT_NAME} alistar_node)
 
