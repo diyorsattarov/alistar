@@ -1,19 +1,24 @@
 #include <iostream>
 #include <node.hpp>
+#include <test_suite.hpp>  // Include the test suite
 
-int main(int argc, char** argv) {
-    node<int> a(1);
-    node<int> b(2);
-    node<int> c(3);
+int main() {
+    tst_suite<int> suite;
 
-    a.l(&b);
-    b.l(&c);
+    suite.add("Node value check", []() {
+        node<int> n(5);
+        tst_suite<int>::assert_eq(n.get(), 5, "Node value should be 5");
+    });
 
-    node<int>* cur = &a;
+    suite.add("Next node linkage", []() {
+        node<int> n1(1);
+        node<int> n2(2);
+        n1.l(&n2);
+        tst_suite<int>::assert_true(n1.next() == &n2, "Next node should be n2");
+    });
 
-    while (cur != nullptr) {
-        std::cout << cur->get() << " ";
-        cur = cur->next();
-    }
+    suite.run();
+
     return 0;
 }
+
