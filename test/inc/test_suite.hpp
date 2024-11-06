@@ -21,6 +21,7 @@ class tst_suite {
                 try {
                     tc();
                     std::cout << "[PASS] " << name << std::endl;
+                    ++passed;
                 } catch (const std::exception &e) { 
                     std::cout << "[FAIL] " << name << ": " << e.what() << std::endl;
                 }
