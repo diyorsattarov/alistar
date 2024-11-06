@@ -1,4 +1,5 @@
-#include <iostream>
+#ifndef NODE_HPP
+#define NODE_HPP
 
 template <typename T>
 class node {
@@ -21,3 +22,5 @@ public:
    // Method to retrieve the nxt node
    node* next() const { return nxt; }
 };
+
+#endif
