@@ -1,4 +1,5 @@
-name: Publish to GitHub Packages
+name: Publish Package
+
 on:
   release:
     types: [created]
@@ -9,29 +10,52 @@ jobs:
     permissions:
       contents: read
       packages: write
-    
+
     steps:
     - uses: actions/checkout@v3
-    
-    # Build binaries
+
     - name: Build
       run: |
         cmake -B build
         cmake --build build
-    
-    # Package binaries
-    - name: Package
-      run: |
-        mkdir -p alistar/lib
-        cp build/*/*.out alistar/lib/
-        
-    # Publish to GitHub Packages
-    - name: Publish to GitHub Packages
+
+    - name: Set up Java for Maven publish
       uses: actions/setup-java@v3
       with:
         java-version: '17'
         distribution: 'temurin'
-    - name: Publish package
+
+    - name: Package binaries
+      run: |
+        mkdir -p src/main/resources/lib
+        cp build/*/*.out src/main/resources/lib/
+        
+    - name: Create pom.xml
+      run: |
+        cat > pom.xml << 'EOF'
+        <?xml version="1.0" encoding="UTF-8"?>
+        <project xmlns="http://maven.apache.org/POM/4.0.0">
+            <modelVersion>4.0.0</modelVersion>
+            
+            <groupId>com.github.diyorsattarov</groupId>
+            <artifactId>alistar</artifactId>
+            <version>1.0.0</version>
+            <packaging>jar</packaging>
+            
+            <name>Alistar</name>
+            <description>C++ templated data structures library</description>
+            
+            <distributionManagement>
+                <repository>
+                    <id>github</id>
+                    <name>GitHub Packages</name>
+                    <url>https://maven.pkg.github.com/diyorsattarov/alistar</url>
+                </repository>
+            </distributionManagement>
+        </project>
+        EOF
+
+    - name: Publish to GitHub Packages
       run: mvn --batch-mode deploy
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
