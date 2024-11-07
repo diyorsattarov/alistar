@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0">
     <modelVersion>4.0.0</modelVersion>
     
-    <groupId>com.github.yourusername</groupId>
+    <groupId>com.github.diyorsattarov</groupId>
     <artifactId>alistar</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
@@ -14,7 +14,7 @@
         <repository>
             <id>github</id>
             <name>GitHub Packages</name>
-            <url>https://maven.pkg.github.com/yourusername/alistar</url>
+            <url>https://maven.pkg.github.com/diyorsattarov/alistar</url>
         </repository>
     </distributionManagement>
 </project>
