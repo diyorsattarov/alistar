@@ -1,0 +1,11 @@
+{
+    "name": "@diyorsattarov/alistar",
+    "version": "1.0.0",
+    "description": "A templated implementation of basic data structures with an integrated unit testing framework",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/diyorsattarov/alistar.git"
+    },
+    "author": "Diyor Sattarov",
+    "license": "MIT License"
+}
