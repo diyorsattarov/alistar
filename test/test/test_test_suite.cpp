@@ -1,5 +1,4 @@
 #include <test_suite.hpp>
-#include <iostream>
 
 int main() {
     tst_suite<int> suite;
