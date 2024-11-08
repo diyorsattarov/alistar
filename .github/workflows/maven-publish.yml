@@ -1,36 +1,52 @@
 name: Publish Package
-
 on:
   release:
     types: [created]
-
 jobs:
   publish:
     runs-on: macos-latest
     permissions:
       contents: read
       packages: write
-
     steps:
     - uses: actions/checkout@v3
-
+    
     - name: Build
       run: |
         cmake -B build
         cmake --build build
-
+    
     - name: Set up Java for Maven publish
       uses: actions/setup-java@v3
       with:
         java-version: '17'
         distribution: 'temurin'
-
+        server-id: github
+        settings-path: ${{ github.workspace }}
+    
     - name: Package binaries
       run: |
         mkdir -p src/main/resources/lib
         cp build/*/*.out src/main/resources/lib/
-
+    
+    - name: Setup Maven Settings
+      run: |
+        mkdir -p ~/.m2
+        echo "<settings>
+                <servers>
+                  <server>
+                    <id>github</id>
+                    <username>${GITHUB_ACTOR}</username>
+                    <password>${GITHUB_TOKEN}</password>
+                  </server>
+                </servers>
+              </settings>" > ~/.m2/settings.xml
+    
     - name: Publish to GitHub Packages
-      run: mvn --batch-mode deploy
+      run: |
+        mvn deploy \
+          --batch-mode \
+          -Dregistry=https://maven.pkg.github.com/${{ github.repository }} \
+          -DskipTests
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
