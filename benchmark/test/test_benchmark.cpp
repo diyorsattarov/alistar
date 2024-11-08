@@ -1,4 +1,3 @@
-// benchmark/test/test_benchmark.cpp
 /****************************************************************************
  * File: test_benchmark.cpp
  * Author: Diyor Sattarov
@@ -15,6 +14,11 @@
 #include <test_suite.hpp>
 #include <thread>
 #include <chrono>
+#include <sstream>  // Added for stringstream
+
+#ifdef _WIN32
+    #include <windows.h>
+#endif
 
 /**
  * @brief Test function that sleeps for a specified duration
@@ -74,7 +78,22 @@ void test_multiple_benchmarks() {
     }
 }
 
+#ifdef _WIN32
+// Enable ANSI escape sequences for Windows console
+void enable_virtual_terminal_processing() {
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    DWORD dwMode = 0;
+    GetConsoleMode(hOut, &dwMode);
+    dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+    SetConsoleMode(hOut, dwMode);
+}
+#endif
+
 int main() {
+    #ifdef _WIN32
+        enable_virtual_terminal_processing();  // Enable colored output in Windows
+    #endif
+
     tst_suite<int> suite;
     
     suite.add("Timing Accuracy", test_timing_accuracy);
